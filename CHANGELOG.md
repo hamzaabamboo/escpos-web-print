@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 — 2026-10-16
+
+- Build on install (`prepare`), so the package also installs straight from GitHub: `npm install github:hamzaabamboo/escpos-web-print#v0.1.1`.
+
 ## 0.1.0 — 2026-10-16
 
 First release, extracted from the [receipt-printer](https://github.com/hamproductions/receipt-printer) app.

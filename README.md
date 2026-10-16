@@ -13,6 +13,8 @@ Draw anything on a `<canvas>` (text in any language, logos, QR codes, photos) an
 npm install escpos-web-print
 ```
 
+Or straight from GitHub: `npm install github:hamzaabamboo/escpos-web-print#v0.1.1`.
+
 ## Quick start
 
 ```ts
@@ -32,7 +34,7 @@ Without a bundler, import from a CDN:
 
 ```html
 <script type="module">
-  import { printCanvas, requestBluetoothPrinter } from 'https://esm.sh/escpos-web-print@0.1.0';
+  import { printCanvas, requestBluetoothPrinter } from 'https://esm.sh/escpos-web-print@0.1.1';
 </script>
 ```
 

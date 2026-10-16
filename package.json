@@ -1,6 +1,6 @@
 {
   "name": "escpos-web-print",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-dependency ESC/POS raster printing from the browser over Web Bluetooth and Web Serial for 58mm/80mm thermal receipt printers.",
   "type": "module",
   "sideEffects": false,
@@ -22,7 +22,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run typecheck && npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run typecheck"
   },
   "keywords": [
     "escpos",
