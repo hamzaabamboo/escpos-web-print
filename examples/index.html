@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>escpos-web-print example</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; }
+      canvas { width: 100%; border: 1px solid #ccc; }
+      textarea { width: 100%; height: 80px; font: inherit; }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+      button { padding: 8px 14px; font: inherit; }
+      #status { color: #555; }
+    </style>
+  </head>
+  <body>
+    <h1>escpos-web-print</h1>
+    <textarea id="message">Hello, printer!
+こんにちは 🖨️</textarea>
+    <canvas id="ticket" width="800" height="300"></canvas>
+    <div class="row">
+      <button id="bluetooth">Print via Bluetooth</button>
+      <button id="serial">Print via Serial</button>
+      <button id="usb">Print via USB</button>
+      <button id="test">Text test (Bluetooth)</button>
+      <button id="save">Save .bin</button>
+    </div>
+    <p id="status">Draw something, then pick a connection.</p>
+
+    <script type="module">
+      import {
+        concat,
+        printCanvas,
+        renderForPrinter,
+        requestBluetoothPrinter,
+        requestSerialPrinter,
+        requestUsbPrinter,
+        sendParts,
+        textTestPage
+      } from '../dist/index.js';
+
+      const canvas = document.querySelector('#ticket');
+      const message = document.querySelector('#message');
+      const status = document.querySelector('#status');
+      const options = { rotate: 90, margin: 12, paddingBefore: 48, paddingAfter: 96 };
+
+      function draw() {
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = '#000';
+        context.font = 'bold 56px system-ui, sans-serif';
+        message.value.split('\n').forEach((line, index) => context.fillText(line, 24, 80 + index * 72));
+      }
+
+      async function run(connect, job) {
+        try {
+          status.textContent = 'Choose a printer…';
+          const printer = await connect();
+          status.textContent = `Printing on ${printer.label}…`;
+          await job(printer);
+          await printer.close();
+          status.textContent = 'Done.';
+        } catch (error) {
+          status.textContent = error.name === 'NotFoundError' ? 'No printer selected.' : error.message;
+        }
+      }
+
+      message.addEventListener('input', draw);
+      draw();
+
+      const printTicket = (printer) =>
+        printCanvas(printer, canvas, {
+          ...options,
+          onProgress: (sent, total) => (status.textContent = `Printing… ${Math.round((sent / total) * 100)}%`)
+        });
+
+      document.querySelector('#bluetooth').onclick = () => run(() => requestBluetoothPrinter(), printTicket);
+      document.querySelector('#serial').onclick = () => run(() => requestSerialPrinter(), printTicket);
+      document.querySelector('#usb').onclick = () => run(() => requestUsbPrinter(), printTicket);
+      document.querySelector('#test').onclick = () => run(() => requestBluetoothPrinter(), (printer) => sendParts(printer, textTestPage()));
+      document.querySelector('#save').onclick = () => {
+        const { parts } = renderForPrinter(canvas, options);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([concat(parts)], { type: 'application/octet-stream' }));
+        link.download = 'ticket.escpos.bin';
+        link.click();
+        URL.revokeObjectURL(link.href);
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "name": "escpos-web-print",
+  "version": "0.1.0",
+  "description": "Zero-dependency ESC/POS raster printing from the browser over Web Bluetooth and Web Serial for 58mm/80mm thermal receipt printers.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "keywords": [
+    "escpos",
+    "esc-pos",
+    "thermal-printer",
+    "receipt-printer",
+    "web-bluetooth",
+    "web-serial",
+    "raster",
+    "dithering",
+    "goojprt",
+    "pt-210"
+  ],
+  "author": "Tanyawat Vittayapalotai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamzaabamboo/escpos-web-print.git"
+  },
+  "homepage": "https://github.com/hamzaabamboo/escpos-web-print#readme",
+  "bugs": {
+    "url": "https://github.com/hamzaabamboo/escpos-web-print/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
